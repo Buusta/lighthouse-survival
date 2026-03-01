@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://ko2bv7ibnvc0"]
+
+[ext_resource type="Script" uid="uid://1gm7msy4l5y0" path="res://scripts/player.gd" id="1_3vyb7"]
+[ext_resource type="Script" uid="uid://dx3ewhlktp811" path="res://scripts/statemachine/state_machine.gd" id="2_qhqgy"]
+[ext_resource type="Script" uid="uid://bveqpu3033ajf" path="res://scripts/statemachine/player/ground_state.gd" id="3_qhqgy"]
+[ext_resource type="Script" uid="uid://bp7uuhw663o80" path="res://scripts/statemachine/player/idle_state.gd" id="4_dqkch"]
+[ext_resource type="Script" uid="uid://r63jpglq8tea" path="res://scripts/statemachine/player/move_state.gd" id="5_qlg0r"]
+[ext_resource type="Script" uid="uid://dtvg8xbexu6ad" path="res://scripts/statemachine/player/sprint_state.gd" id="6_tuyoq"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u8vuu"]
+radius = 0.2
+height = 1.76
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3vyb7"]
+radius = 0.2
+height = 1.76
+radial_segments = 16
+rings = 4
+
+[node name="Player" type="CharacterBody3D" unique_id=1427619276 node_paths=PackedStringArray("head")]
+script = ExtResource("1_3vyb7")
+head = NodePath("Head")
+
+[node name="PlayerShape" type="CollisionShape3D" parent="." unique_id=1070443307]
+shape = SubResource("CapsuleShape3D_u8vuu")
+
+[node name="PlayerMesh" type="MeshInstance3D" parent="." unique_id=2124640254]
+mesh = SubResource("CapsuleMesh_3vyb7")
+
+[node name="Head" type="Node3D" parent="." unique_id=411923703]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65402347, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=879433584]
+
+[node name="StateMachine" type="Node" parent="." unique_id=1843246527 node_paths=PackedStringArray("current_state")]
+script = ExtResource("2_qhqgy")
+current_state = NodePath("GroundState")
+
+[node name="GroundState" type="Node" parent="StateMachine" unique_id=819500405 node_paths=PackedStringArray("base_state")]
+script = ExtResource("3_qhqgy")
+base_state = NodePath("IdleState")
+
+[node name="IdleState" type="Node" parent="StateMachine/GroundState" unique_id=1623681984 node_paths=PackedStringArray("walk_state")]
+script = ExtResource("4_dqkch")
+walk_state = NodePath("../WalkState")
+
+[node name="WalkState" type="Node" parent="StateMachine/GroundState" unique_id=222545680 node_paths=PackedStringArray("idle_state", "sprint_state")]
+script = ExtResource("5_qlg0r")
+idle_state = NodePath("../IdleState")
+sprint_state = NodePath("../SprintState")
+
+[node name="SprintState" type="Node" parent="StateMachine/GroundState" unique_id=1598413259 node_paths=PackedStringArray("idle_state", "walk_state")]
+script = ExtResource("6_tuyoq")
+idle_state = NodePath("../IdleState")
+walk_state = NodePath("../WalkState")
