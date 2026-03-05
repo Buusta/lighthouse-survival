@@ -3,11 +3,11 @@ class_name StateComposite extends State
 @export var base_state: State
 var current_state: State
 
-func initialize(par: Node) -> void:
-	parent = par
+func initialize(state_machine: StateMachine) -> void:
+	parent = state_machine
 
 	for sub_state: State in get_children():
-		sub_state.initialize(parent)
+		sub_state.initialize(state_machine)
 
 func _change_state(new_state: State) -> void:
 	if new_state == current_state:
@@ -51,4 +51,5 @@ func exit() -> void:
 func enter() -> void:
 	current_state = base_state
 	current_state.enter()
+	#print(base_state)
 	pass

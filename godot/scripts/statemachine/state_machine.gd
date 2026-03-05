@@ -1,14 +1,14 @@
 class_name StateMachine extends Node
 
 @export var current_state: State
+@export var debug_enabled: bool = false
 @onready var parent: Node = get_parent()
 
 func _ready() -> void:
 	for sub_state: State in get_children():
-		sub_state.initialize(parent)
+		sub_state.initialize(self)
 
 	current_state.enter()
-
 
 func _change_state(new_state: State) -> void:
 	if new_state == current_state:

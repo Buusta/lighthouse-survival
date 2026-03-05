@@ -1,22 +1,28 @@
 extends State
 
 @export var walk_state: State
+@export var jump_state: State
 
-var player_par: Player
+var player: Player
 
-func initialize(par: Node) -> void:
-	super.initialize(par)
+func initialize(state_machine: StateMachine) -> void:
+	super.initialize(state_machine)
 
-	player_par = par as Player
+	player = state_machine.parent as Player
 
-func enter() -> void:
-	print("idling")
-	player_par.velocity = Vector3(0.0, player_par.velocity.y, 0.0)
-
-func input_tick(_event: InputEvent) -> State:
-	var input_vector: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+func physics_tick(delta: float) -> State:
+	var input_vector: Vector2 = player.input_vector
 
 	if input_vector.length() >= 0.2:
 		return walk_state
 
+	player.move(delta, 0.0, player.deceleration)
+
 	return null
+
+func input_tick(event: InputEvent) -> State:
+	if event.is_action_pressed("jump"):
+		return jump_state
+
+	return null
+	

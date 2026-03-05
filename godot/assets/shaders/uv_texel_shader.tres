@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://nptp10y4eul3"]
+
+[ext_resource type="Shader" uid="uid://i11fj22aq6qo" path="res://assets/shaders/standard_pbr.gdshader" id="1_sxnd5"]
+[ext_resource type="Texture2D" uid="uid://bdax6ow4i00m8" path="res://assets/textures/environment/sand/sand_03_arm_4k.png" id="2_r3muq"]
+[ext_resource type="Texture2D" uid="uid://d0ftbjeukf4gp" path="res://assets/textures/environment/sand/sand_03_diff_4k.jpg" id="3_te32w"]
+[ext_resource type="Texture2D" uid="uid://chhvrakyoco38" path="res://assets/textures/environment/sand/sand_03_nor_gl_4k.png" id="4_apien"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_sxnd5")
+shader_parameter/aorm = ExtResource("2_r3muq")
+shader_parameter/diffuse = ExtResource("3_te32w")
+shader_parameter/normal = ExtResource("4_apien")
+shader_parameter/uv_tiling = Vector2(1, 1)

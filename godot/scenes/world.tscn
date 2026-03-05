@@ -1,6 +1,16 @@
 [gd_scene format=3 uid="uid://cfgd5d5dyjd1o"]
 
+[ext_resource type="Shader" uid="uid://i11fj22aq6qo" path="res://assets/shaders/standard_pbr.gdshader" id="1_4mrxx"]
 [ext_resource type="PackedScene" uid="uid://ko2bv7ibnvc0" path="res://scenes/player.tscn" id="1_nnsk1"]
+[ext_resource type="Shader" uid="uid://c5rtolfrcfwga" path="res://assets/shaders/visual_shaders/standard_burley_shader.tres" id="1_rwgxs"]
+[ext_resource type="Script" uid="uid://8r04lrd4hwfj" path="res://scripts/ocean_move.gd" id="1_w7kh3"]
+[ext_resource type="Texture2D" uid="uid://bdax6ow4i00m8" path="res://assets/textures/environment/sand/sand_03_arm_4k.png" id="2_e3hyu"]
+[ext_resource type="PackedScene" uid="uid://mo4b6x5a2h07" path="res://assets/model_scene/banana_01.tscn" id="2_rwgxs"]
+[ext_resource type="Texture2D" uid="uid://d0ftbjeukf4gp" path="res://assets/textures/environment/sand/sand_03_diff_4k.jpg" id="3_q5onr"]
+[ext_resource type="Texture2D" uid="uid://chhvrakyoco38" path="res://assets/textures/environment/sand/sand_03_nor_gl_4k.png" id="4_jhx03"]
+[ext_resource type="PackedScene" uid="uid://wo41oj5e6tx7" path="res://assets/model_scene/coconut_01.tscn" id="6_qfnet"]
+[ext_resource type="Material" uid="uid://c426ai0qe8fo5" path="res://assets/shaders/ocean_calm_shaders.tres" id="7_7r4gi"]
+[ext_resource type="ArrayMesh" uid="uid://c3fdrqvciw5nr" path="res://assets/model_resource/new_array_mesh.res" id="10_e3hyu"]
 
 [sub_resource type="Gradient" id="Gradient_e5uuo"]
 interpolation_color_space = 1
@@ -26,52 +36,538 @@ background_mode = 2
 sky = SubResource("Sky_nnsk1")
 tonemap_mode = 4
 tonemap_exposure = 2.0
-tonemap_agx_contrast = 1.45
-glow_enabled = true
-fog_sky_affect = 0.0
-volumetric_fog_density = 0.002
-volumetric_fog_temporal_reprojection_amount = 0.5
+glow_normalized = true
+glow_intensity = 1.68
+fog_light_color = Color(1, 1, 1, 1)
+fog_light_energy = 0.71
+fog_sun_scatter = 0.35
+fog_sky_affect = 0.022
+fog_depth_end = 313.3
+volumetric_fog_albedo = Color(0.989, 1, 0.94, 1)
+volumetric_fog_ambient_inject = 1.0
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_4wyf3"]
-size = Vector2(25, 25)
+[sub_resource type="BoxMesh" id="BoxMesh_e3hyu"]
+lightmap_size_hint = Vector2i(454, 401)
+size = Vector3(75, 200, 15)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4wyf3"]
+render_priority = 0
+shader = ExtResource("1_4mrxx")
+shader_parameter/aorm = ExtResource("2_e3hyu")
+shader_parameter/diffuse = ExtResource("3_q5onr")
+shader_parameter/normal = ExtResource("4_jhx03")
+shader_parameter/normal_depth = 1.2
+shader_parameter/uv_tiling = Vector2(37.5, 7.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_e5uuo"]
-size = Vector3(25, 1, 25)
+size = Vector3(75, 1, 15)
+
+[sub_resource type="Shader" id="Shader_e3hyu"]
+code = "shader_type spatial;
+render_mode diffuse_burley;
+
+uniform sampler2D aorm : hint_default_white, filter_linear_mipmap_anisotropic;
+uniform sampler2D diffuse : hint_default_white, filter_linear_mipmap_anisotropic;
+uniform sampler2D normal : hint_normal, filter_linear_mipmap_anisotropic;
+uniform float normal_depth = 1.0;
+
+uniform vec2 uv_tiling = vec2(1.0, 1.0);
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment() {
+	// Called for every pixel the material is visible on.
+	vec3 aorm_tex = texture(aorm, UV * uv_tiling).rgb;
+	vec3 diffuse_tex = texture(diffuse, UV * uv_tiling).rgb;
+	vec3 normal_tex = texture(normal, UV * uv_tiling).rgb;
+
+	ALBEDO = diffuse_tex * aorm_tex.r;
+	ROUGHNESS = aorm_tex.g;
+	NORMAL_MAP = normal_tex;
+	NORMAL_MAP_DEPTH = normal_depth;
+}
+
+//void light() {
+//	// Called for every pixel for every light affecting the material.
+//	// Uncomment to replace the default light processing function with this one.
+//}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q5onr"]
+render_priority = 0
+shader = SubResource("Shader_e3hyu")
+shader_parameter/aorm = ExtResource("2_e3hyu")
+shader_parameter/diffuse = ExtResource("3_q5onr")
+shader_parameter/normal = ExtResource("4_jhx03")
+shader_parameter/normal_depth = 1.2
+shader_parameter/uv_tiling = Vector2(75, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7r4gi"]
+size = Vector3(75, 200, 15)
+
+[sub_resource type="BoxMesh" id="BoxMesh_k0juu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k0juu"]
+render_priority = 0
+shader = ExtResource("1_rwgxs")
+shader_parameter/Color = Color(1, 1, 1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nnsk1"]
 size = Vector3(4, 4, 11)
 
-[sub_resource type="BoxMesh" id="BoxMesh_k0juu"]
+[sub_resource type="BoxMesh" id="BoxMesh_q5onr"]
+lightmap_size_hint = Vector2i(454, 401)
+size = Vector3(500, 1, 500)
 
 [node name="World" type="Node3D" unique_id=703727951]
+
+[node name="OceanMover" type="Node" parent="." unique_id=1575802756 node_paths=PackedStringArray("target_position", "ocean")]
+script = ExtResource("1_w7kh3")
+target_position = NodePath("../Player")
+ocean = NodePath("../OceanClipmap")
+step_size = 8.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1045557955]
 environment = SubResource("Environment_rwgxs")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=400308757]
-transform = Transform3D(0.6389997, -0.11355534, -0.7607789, 0.74626213, 0.33128494, 0.5773585, 0.18647249, -0.9366725, 0.296433, 0, 0, 0)
+[node name="WorldSun" type="DirectionalLight3D" parent="." unique_id=400308757]
+transform = Transform3D(-0.23884024, -0.9494119, 0.20389311, -0.51180744, 0.30151534, 0.8044511, -0.82523227, 0.087781295, -0.5579302, 0, 0, 0)
 light_angular_distance = 0.54
 shadow_enabled = true
+shadow_transmittance_bias = -0.06
+directional_shadow_max_distance = 200.0
 
-[node name="FloorBody" type="StaticBody3D" parent="." unique_id=1619456820]
+[node name="AtmosphereSun" type="DirectionalLight3D" parent="WorldSun" unique_id=1934165890]
+transform = Transform3D(0.9999999, 0, 0, -7.450581e-09, 0.9999999, 0, 2.9802322e-08, -7.450581e-09, 0.9999999, 0, 0, 0)
+visible = false
+light_angular_distance = 0.54
+shadow_transmittance_bias = -0.03
+directional_shadow_max_distance = 200.0
+sky_mode = 2
 
-[node name="Floor" type="MeshInstance3D" parent="FloorBody" unique_id=1138239297]
-mesh = SubResource("PlaneMesh_4wyf3")
+[node name="FloorBody3" type="StaticBody3D" parent="." unique_id=228257226]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="FloorBody" unique_id=31396203]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+[node name="Floor" type="MeshInstance3D" parent="FloorBody3" unique_id=326965692]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, -100, 0)
+mesh = SubResource("BoxMesh_e3hyu")
+surface_material_override/0 = SubResource("ShaderMaterial_4wyf3")
+
+[node name="FloorShape" type="CollisionShape3D" parent="FloorBody3" unique_id=1204518405]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, -0.5, 0)
+visible = false
 shape = SubResource("BoxShape3D_e5uuo")
+
+[node name="FloorBody2" type="StaticBody3D" parent="." unique_id=180792358]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -22, 0, -7)
+
+[node name="Floor" type="MeshInstance3D" parent="FloorBody2" unique_id=1616636721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, -100, 0)
+mesh = SubResource("BoxMesh_e3hyu")
+surface_material_override/0 = SubResource("ShaderMaterial_4wyf3")
+
+[node name="FloorShape" type="CollisionShape3D" parent="FloorBody2" unique_id=277942753]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, -0.5, 0)
+visible = false
+shape = SubResource("BoxShape3D_e5uuo")
+
+[node name="FloorBody4" type="StaticBody3D" parent="." unique_id=676596964]
+transform = Transform3D(-3.0430618e-09, 0.9975738, 0.06961714, 4.3605336e-08, 0.06961714, -0.9975738, -1, 0, -4.371139e-08, -28.973, -7.482, -7)
+
+[node name="Floor" type="MeshInstance3D" parent="FloorBody4" unique_id=1549827567]
+transform = Transform3D(-1, -7.029786e-08, -9.010438e-08, 9.9685764e-08, -0.9221135, -0.3869202, -5.588676e-08, -0.38692015, 0.9221135, 23, 104.26, 39.148)
+mesh = SubResource("BoxMesh_e3hyu")
+surface_material_override/0 = SubResource("ShaderMaterial_q5onr")
+
+[node name="FloorShape" type="CollisionShape3D" parent="FloorBody4" unique_id=1626743045]
+transform = Transform3D(-1, -7.029784e-08, -9.010436e-08, 9.968576e-08, -0.9221132, -0.38692012, -5.588676e-08, -0.38692006, 0.92211324, 23, 104.26001, 39.147995)
+visible = false
+shape = SubResource("BoxShape3D_7r4gi")
 
 [node name="CubeBody" type="StaticBody3D" parent="." unique_id=948745574]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.603945, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CubeBody" unique_id=253857826]
+[node name="Cube" type="MeshInstance3D" parent="CubeBody" unique_id=708340669]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 11, -0.0010242462, 2, 0.0016171932)
+mesh = SubResource("BoxMesh_k0juu")
+surface_material_override/0 = SubResource("ShaderMaterial_k0juu")
+
+[node name="CubeShape" type="CollisionShape3D" parent="CubeBody" unique_id=253857826]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+visible = false
 shape = SubResource("BoxShape3D_nnsk1")
 
-[node name="Cube" type="MeshInstance3D" parent="CubeBody" unique_id=708340669]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 11, 0, 2, 0)
-mesh = SubResource("BoxMesh_k0juu")
-
 [node name="Player" parent="." unique_id=1427619276 instance=ExtResource("1_nnsk1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.88, 9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.019882, 0.8800001, 1.1843443)
+
+[node name="Trees" type="Node3D" parent="." unique_id=956438952]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -24, 0, -7.421509)
+
+[node name="BananaGroup" type="Node3D" parent="Trees" unique_id=157371578]
+
+[node name="banana_02" parent="Trees/BananaGroup" unique_id=28886195 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, 2.4432747)
+
+[node name="banana_03" parent="Trees/BananaGroup" unique_id=1193742217 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, 5.345119)
+
+[node name="banana_04" parent="Trees/BananaGroup" unique_id=1255375698 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -2.9563937)
+
+[node name="banana_05" parent="Trees/BananaGroup" unique_id=739016189 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -0.08874464)
+
+[node name="banana_06" parent="Trees/BananaGroup" unique_id=270384459 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -5.8879237)
+
+[node name="banana_07" parent="Trees/BananaGroup" unique_id=356820104 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, 2.4432747)
+
+[node name="banana_08" parent="Trees/BananaGroup" unique_id=2058117281 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, 5.345119)
+
+[node name="banana_09" parent="Trees/BananaGroup" unique_id=197601474 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -2.9563937)
+
+[node name="banana_10" parent="Trees/BananaGroup" unique_id=1765486410 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -0.08874464)
+
+[node name="banana_11" parent="Trees/BananaGroup" unique_id=187666250 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -5.8879237)
+
+[node name="banana_12" parent="Trees/BananaGroup" unique_id=80593431 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, 2.4432747)
+
+[node name="banana_13" parent="Trees/BananaGroup" unique_id=303681387 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, 5.345119)
+
+[node name="banana_14" parent="Trees/BananaGroup" unique_id=1573532585 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -2.9563937)
+
+[node name="banana_15" parent="Trees/BananaGroup" unique_id=972988656 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -0.08874464)
+
+[node name="banana_16" parent="Trees/BananaGroup" unique_id=1749286457 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -5.8879237)
+
+[node name="banana_17" parent="Trees/BananaGroup" unique_id=1701466997 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, 2.4432747)
+
+[node name="banana_18" parent="Trees/BananaGroup" unique_id=737713870 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, 5.345119)
+
+[node name="banana_19" parent="Trees/BananaGroup" unique_id=1190839699 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -2.9563937)
+
+[node name="banana_20" parent="Trees/BananaGroup" unique_id=914752051 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -0.08874464)
+
+[node name="banana_21" parent="Trees/BananaGroup" unique_id=1526044719 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -5.8879237)
+
+[node name="banana_22" parent="Trees/BananaGroup" unique_id=1297102624 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, 2.4432747)
+
+[node name="banana_23" parent="Trees/BananaGroup" unique_id=1122933483 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, 5.345119)
+
+[node name="banana_24" parent="Trees/BananaGroup" unique_id=1726139882 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -2.9563937)
+
+[node name="banana_25" parent="Trees/BananaGroup" unique_id=1550807818 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -0.08874464)
+
+[node name="banana_26" parent="Trees/BananaGroup" unique_id=1564428015 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -5.8879237)
+
+[node name="BananaGroup2" type="Node3D" parent="Trees" unique_id=1095026313]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7292, 0, 0)
+
+[node name="banana_02" parent="Trees/BananaGroup2" unique_id=1127374186 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, 2.4432747)
+
+[node name="banana_03" parent="Trees/BananaGroup2" unique_id=432057127 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, 5.345119)
+
+[node name="banana_04" parent="Trees/BananaGroup2" unique_id=248216209 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -2.9563937)
+
+[node name="banana_05" parent="Trees/BananaGroup2" unique_id=231455522 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -0.08874464)
+
+[node name="banana_06" parent="Trees/BananaGroup2" unique_id=109652802 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -5.8879237)
+
+[node name="banana_07" parent="Trees/BananaGroup2" unique_id=2112143952 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, 2.4432747)
+
+[node name="banana_08" parent="Trees/BananaGroup2" unique_id=1012378303 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, 5.345119)
+
+[node name="banana_09" parent="Trees/BananaGroup2" unique_id=1107855497 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -2.9563937)
+
+[node name="banana_10" parent="Trees/BananaGroup2" unique_id=1447963053 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -0.08874464)
+
+[node name="banana_11" parent="Trees/BananaGroup2" unique_id=2001478955 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -5.8879237)
+
+[node name="banana_12" parent="Trees/BananaGroup2" unique_id=1270862861 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, 2.4432747)
+
+[node name="banana_13" parent="Trees/BananaGroup2" unique_id=842965823 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, 5.345119)
+
+[node name="banana_14" parent="Trees/BananaGroup2" unique_id=1953851221 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -2.9563937)
+
+[node name="banana_15" parent="Trees/BananaGroup2" unique_id=5501566 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -0.08874464)
+
+[node name="banana_16" parent="Trees/BananaGroup2" unique_id=547857457 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -5.8879237)
+
+[node name="banana_17" parent="Trees/BananaGroup2" unique_id=328789920 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, 2.4432747)
+
+[node name="banana_18" parent="Trees/BananaGroup2" unique_id=147366218 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, 5.345119)
+
+[node name="banana_19" parent="Trees/BananaGroup2" unique_id=238852705 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -2.9563937)
+
+[node name="banana_20" parent="Trees/BananaGroup2" unique_id=1484191054 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -0.08874464)
+
+[node name="banana_21" parent="Trees/BananaGroup2" unique_id=1942875909 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -5.8879237)
+
+[node name="banana_22" parent="Trees/BananaGroup2" unique_id=1347823224 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, 2.4432747)
+
+[node name="banana_23" parent="Trees/BananaGroup2" unique_id=714026384 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, 5.345119)
+
+[node name="banana_24" parent="Trees/BananaGroup2" unique_id=1439514210 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -2.9563937)
+
+[node name="banana_25" parent="Trees/BananaGroup2" unique_id=1212490345 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -0.08874464)
+
+[node name="banana_26" parent="Trees/BananaGroup2" unique_id=1020753827 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -5.8879237)
+
+[node name="BananaGroup3" type="Node3D" parent="Trees" unique_id=1121076438]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.896664, 0, 0)
+
+[node name="banana_02" parent="Trees/BananaGroup3" unique_id=231698143 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, 2.4432747)
+
+[node name="banana_03" parent="Trees/BananaGroup3" unique_id=614818429 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, 5.345119)
+
+[node name="banana_04" parent="Trees/BananaGroup3" unique_id=960902027 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -2.9563937)
+
+[node name="banana_05" parent="Trees/BananaGroup3" unique_id=1415086575 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -0.08874464)
+
+[node name="banana_06" parent="Trees/BananaGroup3" unique_id=1469176390 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -5.8879237)
+
+[node name="banana_07" parent="Trees/BananaGroup3" unique_id=524756725 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, 2.4432747)
+
+[node name="banana_08" parent="Trees/BananaGroup3" unique_id=467144209 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, 5.345119)
+
+[node name="banana_09" parent="Trees/BananaGroup3" unique_id=1005724929 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -2.9563937)
+
+[node name="banana_10" parent="Trees/BananaGroup3" unique_id=205184018 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -0.08874464)
+
+[node name="banana_11" parent="Trees/BananaGroup3" unique_id=1972526322 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -5.8879237)
+
+[node name="banana_12" parent="Trees/BananaGroup3" unique_id=376432240 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, 2.4432747)
+
+[node name="banana_13" parent="Trees/BananaGroup3" unique_id=296548602 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, 5.345119)
+
+[node name="banana_14" parent="Trees/BananaGroup3" unique_id=1355004722 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -2.9563937)
+
+[node name="banana_15" parent="Trees/BananaGroup3" unique_id=908387669 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -0.08874464)
+
+[node name="banana_16" parent="Trees/BananaGroup3" unique_id=1079911254 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -5.8879237)
+
+[node name="banana_17" parent="Trees/BananaGroup3" unique_id=1650519295 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, 2.4432747)
+
+[node name="banana_18" parent="Trees/BananaGroup3" unique_id=1937580292 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, 5.345119)
+
+[node name="banana_19" parent="Trees/BananaGroup3" unique_id=894514309 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -2.9563937)
+
+[node name="banana_20" parent="Trees/BananaGroup3" unique_id=1946332818 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -0.08874464)
+
+[node name="banana_21" parent="Trees/BananaGroup3" unique_id=1379010996 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -5.8879237)
+
+[node name="banana_22" parent="Trees/BananaGroup3" unique_id=444992103 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, 2.4432747)
+
+[node name="banana_23" parent="Trees/BananaGroup3" unique_id=293100361 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, 5.345119)
+
+[node name="banana_24" parent="Trees/BananaGroup3" unique_id=1532268535 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -2.9563937)
+
+[node name="banana_25" parent="Trees/BananaGroup3" unique_id=990416184 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -0.08874464)
+
+[node name="banana_26" parent="Trees/BananaGroup3" unique_id=480098966 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -5.8879237)
+
+[node name="BananaGroup4" type="Node3D" parent="Trees" unique_id=843154233]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.625862, 0, 0)
+
+[node name="banana_02" parent="Trees/BananaGroup4" unique_id=1134115519 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, 2.4432747)
+
+[node name="banana_03" parent="Trees/BananaGroup4" unique_id=400657276 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, 5.345119)
+
+[node name="banana_04" parent="Trees/BananaGroup4" unique_id=1678542079 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -2.9563937)
+
+[node name="banana_05" parent="Trees/BananaGroup4" unique_id=1526136355 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -0.08874464)
+
+[node name="banana_06" parent="Trees/BananaGroup4" unique_id=408540982 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08171797, 5.7876838e-05, -5.8879237)
+
+[node name="banana_07" parent="Trees/BananaGroup4" unique_id=617744637 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, 2.4432747)
+
+[node name="banana_08" parent="Trees/BananaGroup4" unique_id=1088334732 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, 5.345119)
+
+[node name="banana_09" parent="Trees/BananaGroup4" unique_id=661808900 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -2.9563937)
+
+[node name="banana_10" parent="Trees/BananaGroup4" unique_id=701863129 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -0.08874464)
+
+[node name="banana_11" parent="Trees/BananaGroup4" unique_id=536436290 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.087637, 5.7876838e-05, -5.8879237)
+
+[node name="banana_12" parent="Trees/BananaGroup4" unique_id=663992502 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, 2.4432747)
+
+[node name="banana_13" parent="Trees/BananaGroup4" unique_id=1520665219 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, 5.345119)
+
+[node name="banana_14" parent="Trees/BananaGroup4" unique_id=1694803357 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -2.9563937)
+
+[node name="banana_15" parent="Trees/BananaGroup4" unique_id=1154563933 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -0.08874464)
+
+[node name="banana_16" parent="Trees/BananaGroup4" unique_id=1536912945 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.340834, 5.7876838e-05, -5.8879237)
+
+[node name="banana_17" parent="Trees/BananaGroup4" unique_id=612844513 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, 2.4432747)
+
+[node name="banana_18" parent="Trees/BananaGroup4" unique_id=1114693814 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, 5.345119)
+
+[node name="banana_19" parent="Trees/BananaGroup4" unique_id=194056592 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -2.9563937)
+
+[node name="banana_20" parent="Trees/BananaGroup4" unique_id=189898985 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -0.08874464)
+
+[node name="banana_21" parent="Trees/BananaGroup4" unique_id=785817867 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.346753, 5.7876838e-05, -5.8879237)
+
+[node name="banana_22" parent="Trees/BananaGroup4" unique_id=1158231532 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, 2.4432747)
+
+[node name="banana_23" parent="Trees/BananaGroup4" unique_id=1280111381 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, 5.345119)
+
+[node name="banana_24" parent="Trees/BananaGroup4" unique_id=2000929662 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -2.9563937)
+
+[node name="banana_25" parent="Trees/BananaGroup4" unique_id=1693981140 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -0.08874464)
+
+[node name="banana_26" parent="Trees/BananaGroup4" unique_id=1891838886 instance=ExtResource("2_rwgxs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.17087, 5.7876838e-05, -5.8879237)
+
+[node name="CoconutGroup" type="Node3D" parent="Trees" unique_id=1419521013]
+
+[node name="coconut_01" parent="Trees/CoconutGroup" unique_id=515653689 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.662573, 0.0001224, -2.002715)
+
+[node name="coconut_02" parent="Trees/CoconutGroup" unique_id=1532951885 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.292338, 0.0001224, 1.4523926)
+
+[node name="coconut_03" parent="Trees/CoconutGroup" unique_id=1878681294 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.44114, 0.0001224, 3.5201135)
+
+[node name="coconut_04" parent="Trees/CoconutGroup" unique_id=1315255239 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.832842, 0.0001224, -2.228467)
+
+[node name="coconut_05" parent="Trees/CoconutGroup" unique_id=670856237 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.484491, 0.0001224, 1.7266884)
+
+[node name="coconut_06" parent="Trees/CoconutGroup" unique_id=1959834254 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.851662, 0.0001224, 0.37560463)
+
+[node name="coconut_07" parent="Trees/CoconutGroup" unique_id=673550197 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.949108, 0.0001224, 1.7266884)
+
+[node name="CoconutGroup2" type="Node3D" parent="Trees" unique_id=799296481]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 55.443413, 0, 0)
+
+[node name="coconut_01" parent="Trees/CoconutGroup2" unique_id=1274793626 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.662573, 0.0001224, -2.002715)
+
+[node name="coconut_02" parent="Trees/CoconutGroup2" unique_id=1153547269 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.292338, 0.0001224, 1.4523926)
+
+[node name="coconut_03" parent="Trees/CoconutGroup2" unique_id=449581331 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.44114, 0.0001224, 3.5201135)
+
+[node name="coconut_04" parent="Trees/CoconutGroup2" unique_id=1498392214 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.832842, 0.0001224, -2.228467)
+
+[node name="coconut_05" parent="Trees/CoconutGroup2" unique_id=987551708 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.484491, 0.0001224, 1.7266884)
+
+[node name="coconut_06" parent="Trees/CoconutGroup2" unique_id=2060208948 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.851662, 0.0001224, 0.37560463)
+
+[node name="coconut_07" parent="Trees/CoconutGroup2" unique_id=292208564 instance=ExtResource("6_qfnet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.106838, 0.0001224, 1.7266881)
+
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=955430553]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, -70.66737, 0)
+mesh = SubResource("BoxMesh_q5onr")
+surface_material_override/0 = SubResource("ShaderMaterial_q5onr")
+
+[node name="OceanClipmap" type="MeshInstance3D" parent="." unique_id=834401619]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.019882, -3.12, 1.1843443)
+mesh = ExtResource("10_e3hyu")
+surface_material_override/0 = ExtResource("7_7r4gi")
