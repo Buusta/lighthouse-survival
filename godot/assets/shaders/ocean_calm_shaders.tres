@@ -1,31 +1,56 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://c426ai0qe8fo5"]
 
-[ext_resource type="Shader" uid="uid://dq34edjom4crj" path="res://assets/shaders/ocean.gdshader" id="1_6a6k4"]
-[ext_resource type="Texture2D" uid="uid://beh5p8imv3xal" path="res://assets/textures/water_normals_04.png" id="2_2yirn"]
+[ext_resource type="Shader" uid="uid://dllnqu8lyhrdp" path="res://assets/shaders/new_ocean.gdshader" id="1_vodor"]
+[ext_resource type="Texture2D" uid="uid://wtubnvsf44f2" path="res://assets/textures/ocean/foam_gradient.png" id="2_h3pua"]
+[ext_resource type="Texture2D" uid="uid://bl5c17cbtakn7" path="res://assets/textures/ocean/foam_normals.png" id="3_np5rb"]
+[ext_resource type="Texture2D" uid="uid://kotgifmqp200" path="res://assets/textures/ocean/water_normals_03.png" id="4_tnmen"]
+[ext_resource type="Texture2D" uid="uid://cut11fj5mp8df" path="res://assets/textures/ocean/water_normals_05.png" id="5_2vr0l"]
+
+[sub_resource type="Image" id="Image_h3pua"]
+data = {
+"data": PackedByteArray(172, 220, 8, 63, 154, 249, 68, 63, 172, 220, 8, 63, 72, 113, 83, 63, 172, 220, 8, 63, 246, 232, 97, 63, 172, 220, 8, 63, 133, 187, 102, 63, 172, 220, 8, 63, 20, 142, 107, 63, 172, 220, 8, 63, 164, 96, 112, 63, 172, 220, 8, 63, 51, 51, 117, 63, 172, 220, 8, 63, 195, 5, 122, 63, 172, 220, 8, 63, 195, 5, 122, 63, 172, 220, 8, 63, 82, 216, 126, 63, 172, 220, 8, 63, 82, 216, 126, 63, 172, 220, 8, 63, 113, 213, 129, 63, 172, 220, 8, 63, 184, 62, 132, 63, 172, 220, 8, 63, 184, 62, 132, 63, 172, 220, 8, 63, 0, 168, 134, 63, 172, 220, 8, 63, 0, 168, 134, 63, 172, 220, 8, 63, 72, 17, 137, 63, 172, 220, 8, 63, 143, 122, 139, 63, 172, 220, 8, 63, 215, 227, 141, 63, 172, 220, 8, 63, 31, 77, 144, 63, 172, 220, 8, 63, 102, 182, 146, 63, 172, 220, 8, 63, 246, 136, 151, 63, 172, 220, 8, 63, 133, 91, 156, 63, 172, 220, 8, 63, 20, 46, 161, 63, 172, 220, 8, 63, 236, 105, 168, 63, 172, 220, 8, 63, 195, 165, 175, 63, 172, 220, 8, 63, 154, 225, 182, 63, 172, 220, 8, 63, 0, 240, 194, 63, 172, 220, 8, 63, 174, 103, 209, 63, 172, 220, 8, 63, 236, 177, 228, 63, 172, 220, 8, 63, 236, 57, 3, 64, 172, 220, 8, 63, 82, 108, 45, 64),
+"format": "RGFloat",
+"height": 1,
+"mipmaps": false,
+"width": 32
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_np5rb"]
+image = SubResource("Image_h3pua")
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_6a6k4")
-shader_parameter/wave_count = 20
-shader_parameter/wind_dir = Vector2(1, 0)
-shader_parameter/spread = 0.47600002261
-shader_parameter/base_frequency = 0.1750000083125
-shader_parameter/base_amplitude = 0.134000006365
-shader_parameter/fbm_frequency = 1.2170000103075
-shader_parameter/fbm_amplitude = 0.83600003971
-shader_parameter/base_steepness = 3.2630001549925
-shader_parameter/cascade_scale = 1.0
-shader_parameter/wind_speed = 1.5
-shader_parameter/warp_strength = 1.0
-shader_parameter/roughness = 0.0
-shader_parameter/seed = 42.0
-shader_parameter/normal_map_1 = ExtResource("2_2yirn")
-shader_parameter/normal_scale = 0.25
-shader_parameter/normal_depth = -2.2352000028647012e-08
-shader_parameter/water_color = Color(0.021725012, 0.051425718, 0.036327798, 1)
-shader_parameter/absorption_coeffs = Color(0.96, 0.72288, 0.7104, 1)
-shader_parameter/absorption_density = 0.4830000229425
-shader_parameter/transparent_depth_density = 1.0
-shader_parameter/refraction_strength = 0.03369999914739
-shader_parameter/normal_map_refraction_strength = 0.21999999508256
-shader_parameter/refraction_screen_dist = 0.86999998055376
+shader = ExtResource("1_vodor")
+shader_parameter/seed = 41.888
+shader_parameter/wind_speed = 25.0
+shader_parameter/fetch = 100000.0
+shader_parameter/omega_min = 0.635
+shader_parameter/omega_max = 8.0
+shader_parameter/wave_count = 32
+shader_parameter/sample_data = SubResource("ImageTexture_np5rb")
+shader_parameter/amplitude_scale = 1.0
+shader_parameter/frequency_scale = 1.0
+shader_parameter/base_steepness = 1.18400005624
+shader_parameter/wind_dir = Vector2(0.918, -0.125)
+shader_parameter/spread = 0.3200000152
+shader_parameter/water_color = Color(0.0053348904, 0.09197912, 0.10199403, 1)
+shader_parameter/alpha_fade_distance = 4.9030002328925
+shader_parameter/absorption_coeffs = Color(1, 0.6906667, 0.68, 1)
+shader_parameter/absorption_density = 0.16800000798
+shader_parameter/roughness = 0.0050000002375
+shader_parameter/specular = 0.4950000235125
+shader_parameter/foam_distance = 1.20999997295408
+shader_parameter/foam_gradient = ExtResource("2_h3pua")
+shader_parameter/foam_normal_map = ExtResource("3_np5rb")
+shader_parameter/normal_map_1 = ExtResource("4_tnmen")
+shader_parameter/normal_map_2 = ExtResource("5_2vr0l")
+shader_parameter/normal_scale = 0.244
+shader_parameter/normal_velocity = 0.345
+shader_parameter/normal_scale_2 = 0.471
+shader_parameter/normal_velocity_2 = 0.077
+shader_parameter/normal_strength_1 = 0.07
+shader_parameter/normal_strength_2 = 0.129
+shader_parameter/normal_balance = 0.53999998792992
+shader_parameter/normal_depth = -1.0
+shader_parameter/refraction_strength = 0.03289999916763
+shader_parameter/normal_map_refraction_strength = 3.135

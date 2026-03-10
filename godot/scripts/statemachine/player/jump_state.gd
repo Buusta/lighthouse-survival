@@ -8,4 +8,4 @@ func initialize(state_machine: StateMachine) -> void:
 	player = state_machine.parent as Player
 
 func enter() -> void:
-	player.jump(player.jump_velocity)
+	player.jump()

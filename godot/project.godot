@@ -15,15 +15,21 @@ run/main_scene="uid://cfgd5d5dyjd1o"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+InventoryManager="*uid://df0i2f1impkh6"
+DevConsole="*uid://byjrweia2ro7s"
+
 [debug]
 
 gdscript/warnings/untyped_declaration=2
 
 [display]
 
-window/size/mode=4
+window/size/viewport_width=2560
+window/size/viewport_height=1440
 window/size/initial_position_type=4
-window/vsync/vsync_mode=0
+display_server/driver.linuxbsd="wayland"
 
 [input]
 
@@ -62,6 +68,23 @@ exit={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194305,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+interact={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":69,"key_label":0,"unicode":101,"location":0,"echo":false,"script":null)
+]
+}
+open_dev_console={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":96,"key_label":0,"unicode":96,"location":0,"echo":false,"script":null)
+]
+}
+
+[layer_names]
+
+3d_physics/layer_1="world_static"
+3d_physics/layer_2="world_dynamic"
+3d_physics/layer_3="character"
+3d_physics/layer_4="interactable"
 
 [physics]
 
@@ -72,7 +95,5 @@ common/physics_interpolation=true
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
 textures/default_filters/anisotropic_filtering_level=3
-environment/screen_space_reflection/half_size=false
 anti_aliasing/quality/screen_space_aa=2

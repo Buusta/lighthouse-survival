@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ConsumableData" format=3 uid="uid://dtpor0s4lwlo2"]
+
+[ext_resource type="Script" uid="uid://bade0imy7hp65" path="res://scripts/resources/consumable_effect.gd" id="1_1ha3o"]
+[ext_resource type="Script" uid="uid://psexa2wpmo6g" path="res://scripts/resources/items/consumable_data.gd" id="2_crr8d"]
+
+[sub_resource type="Resource" id="Resource_m2kew"]
+script = ExtResource("1_1ha3o")
+value = 18.0
+metadata/_custom_type_script = "uid://bade0imy7hp65"
+
+[resource]
+script = ExtResource("2_crr8d")
+effect_type = Array[ExtResource("1_1ha3o")]([SubResource("Resource_m2kew")])
+id = 69
+name = "Coconut"
+max_stack = 4
+metadata/_custom_type_script = "uid://psexa2wpmo6g"

@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://coketq7rttmmm"]
+
+[ext_resource type="Script" uid="uid://dx32ttu7xfqfm" path="res://scripts/item_component.gd" id="1_ca2v6"]
+[ext_resource type="Script" uid="uid://dht203y3u8rd8" path="res://scripts/interactable_component.gd" id="1_khi28"]
+[ext_resource type="Script" uid="uid://bck8bjiw4upbr" path="res://scripts/resources/items/item_data.gd" id="2_o707d"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ifwl1"]
+size = Vector3(0.242, 0.155, 0.185)
+
+[sub_resource type="BoxMesh" id="BoxMesh_khi28"]
+size = Vector3(0.242, 0.155, 0.185)
+
+[sub_resource type="Resource" id="Resource_1epnt"]
+script = ExtResource("2_o707d")
+id = 35
+name = "Rock"
+max_stack = 3
+weight = 1.0
+metadata/_custom_type_script = "uid://bck8bjiw4upbr"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_g88us"]
+size = Vector3(0.27937207, 0.16478759, 0.21128906)
+
+[node name="RockBody" type="RigidBody3D" unique_id=15247947]
+collision_layer = 8
+collision_mask = 11
+
+[node name="RockShape" type="CollisionShape3D" parent="." unique_id=1321640630]
+shape = SubResource("BoxShape3D_ifwl1")
+
+[node name="RockMesh" type="MeshInstance3D" parent="." unique_id=1621472409]
+mesh = SubResource("BoxMesh_khi28")
+
+[node name="ItemComponent" type="Node" parent="." unique_id=1379776795 node_paths=PackedStringArray("parent")]
+script = ExtResource("1_ca2v6")
+parent = NodePath("..")
+item_data = SubResource("Resource_1epnt")
+metadata/_custom_type_script = "uid://dx32ttu7xfqfm"
+
+[node name="InteractableComponent" type="Area3D" parent="." unique_id=1096845068]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("1_khi28")
+metadata/_custom_type_script = "uid://dht203y3u8rd8"
+
+[node name="RockShape" type="CollisionShape3D" parent="InteractableComponent" unique_id=956816736]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.009273924, 0.002587894, -0.002004385)
+shape = SubResource("BoxShape3D_g88us")
+
+[connection signal="interacted" from="InteractableComponent" to="ItemComponent" method="_interacted"]

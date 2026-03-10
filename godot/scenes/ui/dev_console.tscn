@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://yudwtuy7k12j"]
+
+[ext_resource type="Script" uid="uid://b5t52u8klqo33" path="res://scripts/ui/console_ui.gd" id="1_gcis2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0be3j"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.08855995, 0.0885599, 0.08855987, 0.80784315)
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gcis2"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.12156863, 0.12156863, 0.12156863, 0.80784315)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="DevConsole" type="Control" unique_id=1139271911 node_paths=PackedStringArray("line_edit", "rich_text_label", "suggestion_label")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gcis2")
+line_edit = NodePath("LineEdit")
+rich_text_label = NodePath("RichTextLabel")
+suggestion_label = NodePath("SuggestionRichTextLabel")
+
+[node name="LineEdit" type="LineEdit" parent="." unique_id=1984779562]
+layout_mode = 0
+offset_top = 275.0
+offset_right = 2560.0
+offset_bottom = 350.0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_0be3j")
+placeholder_text = "type command here"
+keep_editing_on_text_submit = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1307697746]
+layout_mode = 0
+offset_right = 2560.0
+offset_bottom = 275.0
+scroll_active = false
+scroll_following = true
+
+[node name="Panel" type="Panel" parent="RichTextLabel" unique_id=1230659921]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gcis2")
+
+[node name="SuggestionRichTextLabel" type="RichTextLabel" parent="." unique_id=917497007]
+custom_minimum_size = Vector2(210, 0)
+layout_mode = 0
+offset_left = 8.0
+offset_top = 350.0
+offset_right = 218.0
+offset_bottom = 350.0
+fit_content = true
+scroll_active = false
+scroll_following = true
+autowrap_mode = 0
+
+[node name="Panel" type="Panel" parent="SuggestionRichTextLabel" unique_id=1143964429]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gcis2")
+
+[connection signal="text_changed" from="LineEdit" to="." method="_text_changed"]
+[connection signal="text_submitted" from="LineEdit" to="." method="_edit_finished"]

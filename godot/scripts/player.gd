@@ -2,7 +2,9 @@ class_name Player extends CharacterBody3D
 
 @export var sensitivity: float = 1.0
 @export var head: Node3D
+@export var interaction_ray: RayCast3D
 @export var keyboard_input_component: KeyboardInputComponent
+@export var camera: Camera3D
 
 @export_category("Movement")
 @export var walk_speed: float = 3.0
@@ -19,6 +21,13 @@ var input_vector: Vector2 = Vector2.ZERO
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
+	DevConsole.add_command("walk_speed", _set_walk_speed, 1)
+
+func _set_walk_speed(args: PackedStringArray) -> float:
+	var speed: float = float(args[0])
+	walk_speed = speed
+	return walk_speed
+
 func _process(_delta: float) -> void:
 	input_vector = keyboard_input_component.input_vector
 
@@ -27,17 +36,33 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		jump(jump_velocity)
-
 	move_and_slide()
 
+	if interaction_ray.is_colliding() and Input.is_action_just_pressed("interact"):
+		var interactable: InteractableComponent = interaction_ray.get_collider()
+		interactable.interact(self)
+
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion && Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(-event.relative.x * sensitivity / 1000.0)
 		head.rotate_x(-event.relative.y * sensitivity / 1000.0)
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+
+	if event.is_action_pressed("exit"):
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+	if event is InputEventMouseButton:
+		if (event as InputEventMouseButton).is_pressed():
+			var camera_tween: Tween = create_tween()
+			camera_tween.set_ease(Tween.EASE_IN_OUT)
+			camera_tween.tween_property(camera, "fov", 50.0, .3)
+		else:
+			var camera_tween: Tween = create_tween()
+			camera_tween.set_ease(Tween.EASE_IN_OUT)
+			camera_tween.tween_property(camera, "fov", 75.0, .3)
 
 func move(delta: float, movement_speed: float, accel: float) -> void:
 	var local_vel: Vector3 = transform.basis.inverse() * velocity
@@ -50,5 +75,6 @@ func move(delta: float, movement_speed: float, accel: float) -> void:
 	velocity.x = (transform.basis * local_vel).x
 	velocity.z = (transform.basis * local_vel).z
 
-func jump(jump_vel: float) -> void:
-	velocity.y = jump_vel
+func jump() -> void:
+	if is_on_floor():
+		velocity.y = jump_velocity

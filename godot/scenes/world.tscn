@@ -2,47 +2,53 @@
 
 [ext_resource type="Shader" uid="uid://i11fj22aq6qo" path="res://assets/shaders/standard_pbr.gdshader" id="1_4mrxx"]
 [ext_resource type="PackedScene" uid="uid://ko2bv7ibnvc0" path="res://scenes/player.tscn" id="1_nnsk1"]
-[ext_resource type="Shader" uid="uid://c5rtolfrcfwga" path="res://assets/shaders/visual_shaders/standard_burley_shader.tres" id="1_rwgxs"]
-[ext_resource type="Script" uid="uid://8r04lrd4hwfj" path="res://scripts/ocean_move.gd" id="1_w7kh3"]
+[ext_resource type="Script" uid="uid://8r04lrd4hwfj" path="res://scripts/ocean_mover.gd" id="1_w7kh3"]
 [ext_resource type="Texture2D" uid="uid://bdax6ow4i00m8" path="res://assets/textures/environment/sand/sand_03_arm_4k.png" id="2_e3hyu"]
+[ext_resource type="Shader" uid="uid://c2githye633dy" path="res://assets/shaders/PhysicalSky.gdshader" id="2_q5onr"]
 [ext_resource type="PackedScene" uid="uid://mo4b6x5a2h07" path="res://assets/model_scene/banana_01.tscn" id="2_rwgxs"]
+[ext_resource type="Script" uid="uid://cn5k58sygithl" path="res://scripts/world_sun.gd" id="3_jhx03"]
 [ext_resource type="Texture2D" uid="uid://d0ftbjeukf4gp" path="res://assets/textures/environment/sand/sand_03_diff_4k.jpg" id="3_q5onr"]
 [ext_resource type="Texture2D" uid="uid://chhvrakyoco38" path="res://assets/textures/environment/sand/sand_03_nor_gl_4k.png" id="4_jhx03"]
 [ext_resource type="PackedScene" uid="uid://wo41oj5e6tx7" path="res://assets/model_scene/coconut_01.tscn" id="6_qfnet"]
 [ext_resource type="Material" uid="uid://c426ai0qe8fo5" path="res://assets/shaders/ocean_calm_shaders.tres" id="7_7r4gi"]
-[ext_resource type="ArrayMesh" uid="uid://c3fdrqvciw5nr" path="res://assets/model_resource/new_array_mesh.res" id="10_e3hyu"]
+[ext_resource type="ArrayMesh" uid="uid://c3fdrqvciw5nr" path="res://assets/model_resource/ocean_clipmap.res" id="10_e3hyu"]
+[ext_resource type="PackedScene" uid="uid://51bt0up402kv" path="res://scenes/items/coconut.tscn" id="14_o8fc1"]
+[ext_resource type="PackedScene" uid="uid://coketq7rttmmm" path="res://scenes/items/rock.tscn" id="14_xo05s"]
 
-[sub_resource type="Gradient" id="Gradient_e5uuo"]
-interpolation_color_space = 1
-offsets = PackedFloat32Array(0, 0.06620209)
-colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_nnsk1"]
-gradient = SubResource("Gradient_e5uuo")
-use_hdr = true
-fill_from = Vector2(1, 1)
-fill_to = Vector2(1, 0.9188034)
-
-[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_rwgxs"]
-rayleigh_coefficient = 1.0
-rayleigh_color = Color(0.23229155, 0.4123215, 0.63469464, 1)
-night_sky = SubResource("GradientTexture2D_nnsk1")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jhx03"]
+shader = ExtResource("2_q5onr")
+shader_parameter/rayleigh = 2.000000095
+shader_parameter/rayleigh_color = Color(0.192, 0.3348, 0.6, 1)
+shader_parameter/mie = 0.005
+shader_parameter/mie_eccentricity = 0.8
+shader_parameter/mie_color = Color(0.69, 0.729, 0.812, 1)
+shader_parameter/sunset_intensity = 1.0000000475
+shader_parameter/turbidity = 10.0
+shader_parameter/sun_disk_offset = 0.0150000007125
+shader_parameter/ground_color = Color(0.1, 0.07, 0.034, 1)
+shader_parameter/exposure = 1.200000057
 
 [sub_resource type="Sky" id="Sky_nnsk1"]
-sky_material = SubResource("PhysicalSkyMaterial_rwgxs")
+sky_material = SubResource("ShaderMaterial_jhx03")
 
 [sub_resource type="Environment" id="Environment_rwgxs"]
 background_mode = 2
 sky = SubResource("Sky_nnsk1")
+ambient_light_source = 3
+reflected_light_source = 2
 tonemap_mode = 4
-tonemap_exposure = 2.0
+tonemap_exposure = 2.53
+tonemap_agx_contrast = 1.43
+glow_enabled = true
 glow_normalized = true
-glow_intensity = 1.68
+glow_intensity = 0.03
+glow_strength = 1.13
 fog_light_color = Color(1, 1, 1, 1)
 fog_light_energy = 0.71
 fog_sun_scatter = 0.35
 fog_sky_affect = 0.022
 fog_depth_end = 313.3
+volumetric_fog_density = 0.03
 volumetric_fog_albedo = Color(0.989, 1, 0.94, 1)
 volumetric_fog_ambient_inject = 1.0
 
@@ -62,42 +68,9 @@ shader_parameter/uv_tiling = Vector2(37.5, 7.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_e5uuo"]
 size = Vector3(75, 1, 15)
 
-[sub_resource type="Shader" id="Shader_e3hyu"]
-code = "shader_type spatial;
-render_mode diffuse_burley;
-
-uniform sampler2D aorm : hint_default_white, filter_linear_mipmap_anisotropic;
-uniform sampler2D diffuse : hint_default_white, filter_linear_mipmap_anisotropic;
-uniform sampler2D normal : hint_normal, filter_linear_mipmap_anisotropic;
-uniform float normal_depth = 1.0;
-
-uniform vec2 uv_tiling = vec2(1.0, 1.0);
-
-void vertex() {
-	// Called for every vertex the material is visible on.
-}
-
-void fragment() {
-	// Called for every pixel the material is visible on.
-	vec3 aorm_tex = texture(aorm, UV * uv_tiling).rgb;
-	vec3 diffuse_tex = texture(diffuse, UV * uv_tiling).rgb;
-	vec3 normal_tex = texture(normal, UV * uv_tiling).rgb;
-
-	ALBEDO = diffuse_tex * aorm_tex.r;
-	ROUGHNESS = aorm_tex.g;
-	NORMAL_MAP = normal_tex;
-	NORMAL_MAP_DEPTH = normal_depth;
-}
-
-//void light() {
-//	// Called for every pixel for every light affecting the material.
-//	// Uncomment to replace the default light processing function with this one.
-//}
-"
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q5onr"]
 render_priority = 0
-shader = SubResource("Shader_e3hyu")
+shader = ExtResource("1_4mrxx")
 shader_parameter/aorm = ExtResource("2_e3hyu")
 shader_parameter/diffuse = ExtResource("3_q5onr")
 shader_parameter/normal = ExtResource("4_jhx03")
@@ -107,19 +80,9 @@ shader_parameter/uv_tiling = Vector2(75, 100)
 [sub_resource type="BoxShape3D" id="BoxShape3D_7r4gi"]
 size = Vector3(75, 200, 15)
 
-[sub_resource type="BoxMesh" id="BoxMesh_k0juu"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k0juu"]
-render_priority = 0
-shader = ExtResource("1_rwgxs")
-shader_parameter/Color = Color(1, 1, 1, 1)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_nnsk1"]
-size = Vector3(4, 4, 11)
-
 [sub_resource type="BoxMesh" id="BoxMesh_q5onr"]
 lightmap_size_hint = Vector2i(454, 401)
-size = Vector3(500, 1, 500)
+size = Vector3(2000, 1, 2000)
 
 [node name="World" type="Node3D" unique_id=703727951]
 
@@ -133,21 +96,18 @@ step_size = 8.0
 environment = SubResource("Environment_rwgxs")
 
 [node name="WorldSun" type="DirectionalLight3D" parent="." unique_id=400308757]
-transform = Transform3D(-0.23884024, -0.9494119, 0.20389311, -0.51180744, 0.30151534, 0.8044511, -0.82523227, 0.087781295, -0.5579302, 0, 0, 0)
-light_angular_distance = 0.54
+transform = Transform3D(-0.2380151, 0.83963037, 0.4882312, 0.57041025, -0.2860171, 0.76995224, 0.7861176, 0.46175236, -0.4108573, 0, 3.895998, 0)
+light_color = Color(1, 0.93333334, 0.8901961, 1)
+light_energy = 0.58285385
 shadow_enabled = true
 shadow_transmittance_bias = -0.06
+directional_shadow_split_1 = 0.074
+directional_shadow_split_2 = 0.174
 directional_shadow_max_distance = 200.0
-
-[node name="AtmosphereSun" type="DirectionalLight3D" parent="WorldSun" unique_id=1934165890]
-transform = Transform3D(0.9999999, 0, 0, -7.450581e-09, 0.9999999, 0, 2.9802322e-08, -7.450581e-09, 0.9999999, 0, 0, 0)
-visible = false
-light_angular_distance = 0.54
-shadow_transmittance_bias = -0.03
-directional_shadow_max_distance = 200.0
-sky_mode = 2
+script = ExtResource("3_jhx03")
 
 [node name="FloorBody3" type="StaticBody3D" parent="." unique_id=228257226]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4945126, 0)
 
 [node name="Floor" type="MeshInstance3D" parent="FloorBody3" unique_id=326965692]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, -100, 0)
@@ -160,7 +120,7 @@ visible = false
 shape = SubResource("BoxShape3D_e5uuo")
 
 [node name="FloorBody2" type="StaticBody3D" parent="." unique_id=180792358]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -22, 0, -7)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -22, 1.4945126, -7)
 
 [node name="Floor" type="MeshInstance3D" parent="FloorBody2" unique_id=1616636721]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, -100, 0)
@@ -173,36 +133,23 @@ visible = false
 shape = SubResource("BoxShape3D_e5uuo")
 
 [node name="FloorBody4" type="StaticBody3D" parent="." unique_id=676596964]
-transform = Transform3D(-3.0430618e-09, 0.9975738, 0.06961714, 4.3605336e-08, 0.06961714, -0.9975738, -1, 0, -4.371139e-08, -28.973, -7.482, -7)
+transform = Transform3D(-3.0430698e-09, 0.99757373, 0.06961715, 4.3605333e-08, 0.06961714, -0.99757373, -1, 3.5527137e-15, -4.3711392e-08, -25.77295, -4.1983585, -7)
 
-[node name="Floor" type="MeshInstance3D" parent="FloorBody4" unique_id=1549827567]
-transform = Transform3D(-1, -7.029786e-08, -9.010438e-08, 9.9685764e-08, -0.9221135, -0.3869202, -5.588676e-08, -0.38692015, 0.9221135, 23, 104.26, 39.148)
+[node name="Floor2" type="MeshInstance3D" parent="FloorBody4" unique_id=1549827567]
+transform = Transform3D(-1, -7.404313e-08, -9.147849e-08, 9.816056e-08, -0.9535492, -0.30123854, -6.492455e-08, -0.30123845, 0.95354927, 23, 104.734314, 32.351818)
 mesh = SubResource("BoxMesh_e3hyu")
 surface_material_override/0 = SubResource("ShaderMaterial_q5onr")
 
 [node name="FloorShape" type="CollisionShape3D" parent="FloorBody4" unique_id=1626743045]
-transform = Transform3D(-1, -7.029784e-08, -9.010436e-08, 9.968576e-08, -0.9221132, -0.38692012, -5.588676e-08, -0.38692006, 0.92211324, 23, 104.26001, 39.147995)
+transform = Transform3D(-1, -7.404311e-08, -9.1478455e-08, 9.816056e-08, -0.95354885, -0.30123842, -6.492455e-08, -0.30123836, 0.9535489, 23, 104.73432, 32.351818)
 visible = false
 shape = SubResource("BoxShape3D_7r4gi")
 
-[node name="CubeBody" type="StaticBody3D" parent="." unique_id=948745574]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.603945, 0, 0)
-
-[node name="Cube" type="MeshInstance3D" parent="CubeBody" unique_id=708340669]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 11, -0.0010242462, 2, 0.0016171932)
-mesh = SubResource("BoxMesh_k0juu")
-surface_material_override/0 = SubResource("ShaderMaterial_k0juu")
-
-[node name="CubeShape" type="CollisionShape3D" parent="CubeBody" unique_id=253857826]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-visible = false
-shape = SubResource("BoxShape3D_nnsk1")
-
 [node name="Player" parent="." unique_id=1427619276 instance=ExtResource("1_nnsk1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.019882, 0.8800001, 1.1843443)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6032543, 2.79951, 2.5108852)
 
 [node name="Trees" type="Node3D" parent="." unique_id=956438952]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -24, 0, -7.421509)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -21.453463, 1.4945126, -7.421509)
 
 [node name="BananaGroup" type="Node3D" parent="Trees" unique_id=157371578]
 
@@ -568,6 +515,106 @@ mesh = SubResource("BoxMesh_q5onr")
 surface_material_override/0 = SubResource("ShaderMaterial_q5onr")
 
 [node name="OceanClipmap" type="MeshInstance3D" parent="." unique_id=834401619]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.019882, -3.12, 1.1843443)
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 11.144707, 0, -32.71383)
 mesh = ExtResource("10_e3hyu")
 surface_material_override/0 = ExtResource("7_7r4gi")
+
+[node name="Coconuts" type="Node3D" parent="." unique_id=267815171]
+
+[node name="CoconutBody" parent="Coconuts" unique_id=208182764 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1898708, 4.142334, 0.41470793)
+
+[node name="CoconutBody2" parent="Coconuts" unique_id=1640555974 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9241204, 3.758092, 0.41470793)
+
+[node name="CoconutBody3" parent="Coconuts" unique_id=622314561 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.674706, 4.175332, 0.41470793)
+
+[node name="CoconutBody4" parent="Coconuts" unique_id=465463134 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9413949, 4.299989, 0.41470793)
+
+[node name="CoconutBody5" parent="Coconuts" unique_id=1300974537 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2937257, 3.758092, 0.41470793)
+
+[node name="CoconutBody6" parent="Coconuts" unique_id=1441357562 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.68846995, 3.758092, 0.41470793)
+
+[node name="CoconutBody7" parent="Coconuts" unique_id=1092255132 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3567758, 4.2640176, 0.04991427)
+
+[node name="CoconutBody8" parent="Coconuts" unique_id=394730078 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9241204, 3.758092, 0.04991427)
+
+[node name="CoconutBody9" parent="Coconuts" unique_id=1597765941 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.44009316, 4.175332, 0.04991427)
+
+[node name="CoconutBody10" parent="Coconuts" unique_id=1217665170 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9241204, 4.1137743, 0.04991427)
+
+[node name="CoconutBody11" parent="Coconuts" unique_id=167222648 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2937257, 3.758092, 0.04991427)
+
+[node name="CoconutBody12" parent="Coconuts" unique_id=481886379 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5721007, 3.6920457, 0.04991427)
+
+[node name="CoconutBody13" parent="Coconuts" unique_id=109735813 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1898708, 4.142334, -0.3473117)
+
+[node name="CoconutBody14" parent="Coconuts" unique_id=343005718 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.93265414, 3.6218472, 0.0011523068)
+
+[node name="CoconutBody15" parent="Coconuts" unique_id=763155218 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.674706, 4.175332, -0.3473117)
+
+[node name="CoconutBody16" parent="Coconuts" unique_id=785185093 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9241204, 4.1137743, -0.3473117)
+
+[node name="CoconutBody17" parent="Coconuts" unique_id=1462255209 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2937257, 3.758092, -0.3473117)
+
+[node name="CoconutBody18" parent="Coconuts" unique_id=17498874 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.68846995, 3.758092, -0.3473117)
+
+[node name="CoconutBody19" parent="Coconuts" unique_id=874824275 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1898708, 4.142334, -0.7121054)
+
+[node name="CoconutBody20" parent="Coconuts" unique_id=739822928 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0009491, 3.5592732, -0.7121054)
+
+[node name="CoconutBody21" parent="Coconuts" unique_id=572267384 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.674706, 4.3974366, -0.9804001)
+
+[node name="CoconutBody22" parent="Coconuts" unique_id=496356755 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9241204, 4.1137743, -0.7121054)
+
+[node name="CoconutBody23" parent="Coconuts" unique_id=670498456 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2937257, 3.758092, -0.7121054)
+
+[node name="CoconutBody24" parent="Coconuts" unique_id=368616698 instance=ExtResource("14_o8fc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.68846995, 3.758092, -0.7121054)
+
+[node name="Rocks" type="Node3D" parent="." unique_id=907900193]
+
+[node name="RockBody" parent="Rocks" unique_id=15247947 instance=ExtResource("14_xo05s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9451976, 2.9292989, -0.10081172)
+
+[node name="RockBody2" parent="Rocks" unique_id=758900221 instance=ExtResource("14_xo05s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.179097, 3.20943, 0.24709177)
+
+[node name="RockBody3" parent="Rocks" unique_id=109165435 instance=ExtResource("14_xo05s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9451976, 2.9292989, -0.5107684)
+
+[node name="RockBody4" parent="Rocks" unique_id=1185671683 instance=ExtResource("14_xo05s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2865922, 3.20943, -0.74321866)
+
+[node name="RockBody5" parent="Rocks" unique_id=932865697 instance=ExtResource("14_xo05s")]
+transform = Transform3D(-0.5249223, -0.4246643, -0.73764277, 0.6289541, -0.77744246, 0, -0.5734748, -0.46394345, 0.6751912, 1.0940883, 3.690805, -0.010553777)
+
+[node name="RockBody6" parent="Rocks" unique_id=1009844466 instance=ExtResource("14_xo05s")]
+transform = Transform3D(-0.5249223, -0.4246643, -0.73764277, 0.6289541, -0.77744246, 0, -0.5734748, -0.46394345, 0.6751912, 0.595719, 3.6201313, -0.03975281)
+
+[node name="RockBody7" parent="Rocks" unique_id=1561540410 instance=ExtResource("14_xo05s")]
+transform = Transform3D(-0.5249223, -0.4246643, -0.73764277, 0.6289541, -0.77744246, 0, -0.5734748, -0.46394345, 0.6751912, 1.3964899, 3.690805, -0.28735292)
+
+[node name="RockBody8" parent="Rocks" unique_id=724680739 instance=ExtResource("14_xo05s")]
+transform = Transform3D(-0.5249223, -0.4246643, -0.73764277, 0.6289541, -0.77744246, 0, -0.5734748, -0.46394345, 0.6751912, 1.2697878, 3.6877408, -0.77004755)

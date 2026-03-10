@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://51bt0up402kv"]
+
+[ext_resource type="Shader" uid="uid://cuthq7h84bmj8" path="res://assets/shaders/treeit_shader.gdshader" id="1_r4rer"]
+[ext_resource type="Texture2D" uid="uid://cn78traskfw17" path="res://assets/textures/coconut 1.png" id="2_xxnk7"]
+[ext_resource type="Texture2D" uid="uid://cxtkt1anvlbps" path="res://assets/textures/coconut 1_normal.png" id="3_jrot6"]
+[ext_resource type="Texture2D" uid="uid://bigti1u0og1xf" path="res://assets/textures/coconut 1_roughness.png" id="4_dw1dp"]
+[ext_resource type="Script" uid="uid://dx32ttu7xfqfm" path="res://scripts/item_component.gd" id="5_xxnk7"]
+[ext_resource type="Resource" uid="uid://dtpor0s4lwlo2" path="res://resources/items/consumables/coconut.tres" id="6_jrot6"]
+[ext_resource type="Script" uid="uid://dht203y3u8rd8" path="res://scripts/interactable_component.gd" id="7_dw1dp"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_xob32"]
+radius = 0.14
+
+[sub_resource type="SphereMesh" id="SphereMesh_vc80x"]
+radius = 0.15
+height = 0.3
+radial_segments = 16
+rings = 8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ueq0q"]
+render_priority = 0
+shader = ExtResource("1_r4rer")
+shader_parameter/diffuse = ExtResource("2_xxnk7")
+shader_parameter/roughness = ExtResource("4_dw1dp")
+shader_parameter/normal = ExtResource("3_jrot6")
+shader_parameter/normal_depth = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_dw1dp"]
+radius = 0.15
+
+[node name="CoconutBody" type="RigidBody3D" unique_id=208182764]
+collision_layer = 8
+collision_mask = 11
+mass = 0.56
+linear_damp = 1.053
+angular_damp = 1.0
+
+[node name="CoconutShape" type="CollisionShape3D" parent="." unique_id=1861549141]
+visible = false
+shape = SubResource("SphereShape3D_xob32")
+
+[node name="CoconutMesh" type="MeshInstance3D" parent="." unique_id=631827979]
+mesh = SubResource("SphereMesh_vc80x")
+surface_material_override/0 = SubResource("ShaderMaterial_ueq0q")
+
+[node name="ItemComponent" type="Node" parent="." unique_id=659801441 node_paths=PackedStringArray("parent")]
+script = ExtResource("5_xxnk7")
+parent = NodePath("..")
+item_data = ExtResource("6_jrot6")
+metadata/_custom_type_script = "uid://dx32ttu7xfqfm"
+
+[node name="InteractableComponent" type="Area3D" parent="." unique_id=2147309565]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("7_dw1dp")
+metadata/_custom_type_script = "uid://dht203y3u8rd8"
+
+[node name="InteractableShape" type="CollisionShape3D" parent="InteractableComponent" unique_id=554810360]
+visible = false
+shape = SubResource("SphereShape3D_dw1dp")
+
+[connection signal="interacted" from="InteractableComponent" to="ItemComponent" method="_interacted"]
