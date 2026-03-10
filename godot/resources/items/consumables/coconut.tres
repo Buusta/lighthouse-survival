@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bade0imy7hp65" path="res://scripts/resources/consumable_effect.gd" id="1_1ha3o"]
 [ext_resource type="Script" uid="uid://psexa2wpmo6g" path="res://scripts/resources/items/consumable_data.gd" id="2_crr8d"]
+[ext_resource type="Texture2D" uid="uid://drxi8s5t08guj" path="res://icon.svg" id="2_giasx"]
 
 [sub_resource type="Resource" id="Resource_m2kew"]
 script = ExtResource("1_1ha3o")
@@ -13,5 +14,7 @@ script = ExtResource("2_crr8d")
 effect_type = Array[ExtResource("1_1ha3o")]([SubResource("Resource_m2kew")])
 id = 69
 name = "Coconut"
+icon = ExtResource("2_giasx")
 max_stack = 4
+weight = 0.5
 metadata/_custom_type_script = "uid://psexa2wpmo6g"

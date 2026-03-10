@@ -1,5 +1,7 @@
 extends Node
 
+signal stack_updated(stack: ItemStack, stack_idx: int)
+
 var inventory_slots: int = 4
 var inventory_stacks: Array[ItemStack] = []
 
@@ -24,11 +26,13 @@ func add_item(item_data: ItemData) -> bool:
 		if stack.id == item_data.id:
 			if stack.item_data.size() < item_data.max_stack:
 				stack.item_data.append(item_data)
+				stack_updated.emit(stack, i)
 				return true
 
 	if empty_stack_idx != -1:
 		inventory_stacks[empty_stack_idx].id = item_data.id
 		inventory_stacks[empty_stack_idx].item_data.append(item_data)
+		stack_updated.emit(inventory_stacks[empty_stack_idx], empty_stack_idx)
 		return true
 
 	return false

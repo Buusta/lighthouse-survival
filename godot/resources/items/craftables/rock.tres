@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://d1yt4421m3ga7"]
+
+[ext_resource type="Script" uid="uid://bck8bjiw4upbr" path="res://scripts/resources/items/item_data.gd" id="1_pbcqv"]
+
+[resource]
+script = ExtResource("1_pbcqv")
+id = 35
+name = "Rock"
+max_stack = 3
+weight = 1.0
+metadata/_custom_type_script = "uid://bck8bjiw4upbr"

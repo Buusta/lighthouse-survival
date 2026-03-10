@@ -1,7 +1,11 @@
-extends CanvasLayer
+class_name PlayerUI extends CanvasLayer
 
 @onready var frame_time_label: Label = $FpsLabel
 @onready var dev_console: Control = $DevConsole
+@onready var inventory: Control = $Inventory
+
+@onready var thirst_bar: ProgressBar = $ThirstBar
+@onready var hunger_bar: ProgressBar = $HungerBar
 
 @export var keybouard_input_component: KeyboardInputComponent
 
@@ -26,6 +30,14 @@ func _toggle_dev_console() -> void:
 	else:
 		dev_console.visible = true
 		keybouard_input_component.active = false
+
+func _toggle_inventory() -> void:
+	if inventory.visible:
+		inventory.visible = false
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	else:
+		inventory.visible = true
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _toggle_fps(args: PackedStringArray) -> bool:
 	var toggle: bool = true if int(args[0]) == 1 else false

@@ -2,21 +2,13 @@
 
 [ext_resource type="Script" uid="uid://dx32ttu7xfqfm" path="res://scripts/item_component.gd" id="1_ca2v6"]
 [ext_resource type="Script" uid="uid://dht203y3u8rd8" path="res://scripts/interactable_component.gd" id="1_khi28"]
-[ext_resource type="Script" uid="uid://bck8bjiw4upbr" path="res://scripts/resources/items/item_data.gd" id="2_o707d"]
+[ext_resource type="Resource" uid="uid://d1yt4421m3ga7" path="res://resources/items/craftables/rock.tres" id="2_ca2v6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ifwl1"]
 size = Vector3(0.242, 0.155, 0.185)
 
 [sub_resource type="BoxMesh" id="BoxMesh_khi28"]
 size = Vector3(0.242, 0.155, 0.185)
-
-[sub_resource type="Resource" id="Resource_1epnt"]
-script = ExtResource("2_o707d")
-id = 35
-name = "Rock"
-max_stack = 3
-weight = 1.0
-metadata/_custom_type_script = "uid://bck8bjiw4upbr"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_g88us"]
 size = Vector3(0.27937207, 0.16478759, 0.21128906)
@@ -34,7 +26,7 @@ mesh = SubResource("BoxMesh_khi28")
 [node name="ItemComponent" type="Node" parent="." unique_id=1379776795 node_paths=PackedStringArray("parent")]
 script = ExtResource("1_ca2v6")
 parent = NodePath("..")
-item_data = SubResource("Resource_1epnt")
+item_data = ExtResource("2_ca2v6")
 metadata/_custom_type_script = "uid://dx32ttu7xfqfm"
 
 [node name="InteractableComponent" type="Area3D" parent="." unique_id=1096845068]

@@ -6,6 +6,7 @@ var commands: Dictionary = {}
 
 func _ready() -> void:
 	add_command("print", _dev_console_print, 1)
+	add_command("we_love_cats", _we_love_cats)
 
 func add_command(comm: String, callable: Callable, args_count: int = 0) -> void:
 	commands[comm] = [callable, args_count]
@@ -18,6 +19,9 @@ func get_suggestions(current: String) -> Array[String]:
 	return suggestions
 
 func execute(input: String) -> void:
+	if input.length() < 1:
+		return
+
 	var parts: PackedStringArray = parse_args(input)
 	var command: String = parts[0]
 	var args: PackedStringArray = parts.slice(1)
@@ -53,3 +57,10 @@ func parse_args(input: String) -> PackedStringArray:
 
 func _dev_console_print(args: PackedStringArray) -> String:
 	return args[0]
+
+func _we_love_cats(_args: PackedStringArray) -> String:
+	var maxwell: PackedScene = preload("res://assets/model_scene/maxwell.tscn")
+	var physical_maxwell: RigidBody3D = maxwell.instantiate()
+	physical_maxwell.position = Vector3(0.0, 100.0, 0.0)
+	add_child(physical_maxwell)  # 👈 this is what you're missing
+	return "meow"

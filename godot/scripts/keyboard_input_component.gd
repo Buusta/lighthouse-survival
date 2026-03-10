@@ -7,7 +7,7 @@ var input_vector: Vector2
 signal jump()
 signal exit()
 signal dev_console()
-
+signal open_inventory()
 
 
 func _process(_delta: float) -> void:
@@ -35,3 +35,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("jump"):
 		jump.emit()
+
+	if event.is_action_pressed("open_inventory"):
+		open_inventory.emit()
