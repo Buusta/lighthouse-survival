@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://lu7nln5b0xld" path="res://scripts/statemachine/player/fall_state.gd" id="9_ur7pv"]
 [ext_resource type="Script" uid="uid://8kytohisuply" path="res://scripts/keyboard_input_component.gd" id="10_y4r1p"]
 [ext_resource type="PackedScene" uid="uid://dg6irswydhd4r" path="res://scenes/ui/player_ui.tscn" id="11_d2wvv"]
+[ext_resource type="Script" uid="uid://uq2eeb8bpbup" path="res://scripts/stats_component.gd" id="13_jej6c"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u8vuu"]
 radius = 0.2
@@ -28,7 +29,7 @@ render_priority = 0
 shader = ExtResource("2_3v2ag")
 shader_parameter/Color = Color(1, 1, 1, 1)
 
-[node name="Player" type="CharacterBody3D" unique_id=1427619276 node_paths=PackedStringArray("head", "interaction_ray", "keyboard_input_component", "camera", "player_ui")]
+[node name="Player" type="CharacterBody3D" unique_id=1427619276 node_paths=PackedStringArray("head", "interaction_ray", "keyboard_input_component", "camera", "player_ui", "stats")]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_3vyb7")
@@ -37,6 +38,7 @@ interaction_ray = NodePath("Head/Camera3D/InteractionRay")
 keyboard_input_component = NodePath("KeyboardInputComponent")
 camera = NodePath("Head/Camera3D")
 player_ui = NodePath("PlayerUI")
+stats = NodePath("PlayerStatsComponent")
 acceleration = 50.0
 deceleration = 25.0
 
@@ -103,6 +105,10 @@ metadata/_custom_type_script = "uid://8kytohisuply"
 
 [node name="PlayerUI" parent="." unique_id=1451590345 node_paths=PackedStringArray("keybouard_input_component") instance=ExtResource("11_d2wvv")]
 keybouard_input_component = NodePath("../KeyboardInputComponent")
+
+[node name="PlayerStatsComponent" type="Node" parent="." unique_id=1099282194]
+script = ExtResource("13_jej6c")
+metadata/_custom_type_script = "uid://uq2eeb8bpbup"
 
 [connection signal="dev_console" from="KeyboardInputComponent" to="PlayerUI" method="_toggle_dev_console"]
 [connection signal="jump" from="KeyboardInputComponent" to="." method="jump"]

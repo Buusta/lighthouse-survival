@@ -9,7 +9,6 @@ signal exit()
 signal dev_console()
 signal open_inventory()
 
-
 func _process(_delta: float) -> void:
 	if not active:
 		return

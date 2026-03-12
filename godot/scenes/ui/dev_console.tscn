@@ -29,6 +29,7 @@ corner_radius_bottom_left = 3
 corner_detail = 5
 
 [node name="DevConsole" type="Control" unique_id=1139271911 node_paths=PackedStringArray("line_edit", "rich_text_label", "suggestion_label")]
+z_index = 21
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,6 +42,7 @@ rich_text_label = NodePath("RichTextLabel")
 suggestion_label = NodePath("SuggestionRichTextLabel")
 
 [node name="LineEdit" type="LineEdit" parent="." unique_id=1984779562]
+z_index = 22
 layout_mode = 0
 offset_top = 275.0
 offset_right = 2560.0
@@ -51,6 +53,7 @@ placeholder_text = "type command here"
 keep_editing_on_text_submit = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1307697746]
+z_index = 22
 layout_mode = 0
 offset_right = 2560.0
 offset_bottom = 275.0
@@ -68,19 +71,22 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_gcis2")
 
 [node name="SuggestionRichTextLabel" type="RichTextLabel" parent="." unique_id=917497007]
+z_index = 20
 custom_minimum_size = Vector2(210, 0)
 layout_mode = 0
 offset_left = 8.0
 offset_top = 350.0
 offset_right = 218.0
 offset_bottom = 350.0
+text = "ass"
 fit_content = true
 scroll_active = false
 scroll_following = true
 autowrap_mode = 0
 
 [node name="Panel" type="Panel" parent="SuggestionRichTextLabel" unique_id=1143964429]
-z_index = -1
+z_index = 21
+z_as_relative = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

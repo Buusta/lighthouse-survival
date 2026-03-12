@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://ds2md57x6hdvw"]
+
+[ext_resource type="Script" uid="uid://cnh41xwnltl2" path="res://scripts/ui/cursor_slot.gd" id="1_e1go5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e1go5"]
+
+[node name="PanelContainer" type="PanelContainer" unique_id=1911351696]
+custom_minimum_size = Vector2(256, 256)
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_e1go5")
+script = ExtResource("1_e1go5")
+
+[node name="Icon" type="TextureRect" parent="." unique_id=641492638]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="InfoVBox" type="VBoxContainer" parent="." unique_id=1269895800]
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+
+[node name="QuantityHBox" type="HBoxContainer" parent="InfoVBox" unique_id=1095963184]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="InfoVBox/QuantityHBox" unique_id=689121162]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="QuantityLabel" type="Label" parent="InfoVBox/QuantityHBox" unique_id=1643501]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 40
+
+[node name="BottomOffset" type="MarginContainer" parent="InfoVBox" unique_id=1706692202]
+custom_minimum_size = Vector2(14, 9)
+layout_mode = 2
+mouse_filter = 2

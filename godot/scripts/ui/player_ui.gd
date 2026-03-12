@@ -23,6 +23,12 @@ func _process(delta: float) -> void:
 
 		frame_time_label.text = "ms: %.2f | avg: %.2f | fps: %d" % [delta * 1000.0, avg_delta * 1000.0, int(1.0 / avg_delta)]
 
+		_update_stats_bar()
+
+func _update_stats_bar() -> void:
+	hunger_bar.value = GameLocator.player.stats.hunger
+	thirst_bar.value = GameLocator.player.stats.thirst
+
 func _toggle_dev_console() -> void:
 	if dev_console.visible:
 		dev_console.visible = false

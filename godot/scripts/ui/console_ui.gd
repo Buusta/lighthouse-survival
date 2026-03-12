@@ -13,6 +13,7 @@ var current_suggestions: Array[String] = []
 
 func _ready() -> void:
 	DevConsole.output.connect(_console_written)
+	DevConsole.add_command("clear", _clear_rich_text)
 
 func _text_changed(input: String) -> void:
 	if input.length() < 1:
@@ -64,7 +65,7 @@ func _input(event: InputEvent) -> void:
 					line_edit.text = history[history.size() - depth]
 					line_edit.set_caret_column(line_edit.text.length())
 
-		if event.is_action_pressed("ui_focus_next"):
+		if event.is_action_pressed("open_inventory"):
 			get_viewport().set_input_as_handled()
 			if current_suggestions.size() == 0:
 				return
@@ -76,3 +77,7 @@ func _input(event: InputEvent) -> void:
 
 func _console_written(input: String) -> void:
 	rich_text_label.append_text(input + "\n")
+
+func _clear_rich_text(_args: PackedStringArray) -> void:
+	rich_text_label.text = ""
+	return

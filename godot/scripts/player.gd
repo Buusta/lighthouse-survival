@@ -6,6 +6,7 @@ class_name Player extends CharacterBody3D
 @export var keyboard_input_component: KeyboardInputComponent
 @export var camera: Camera3D
 @export var player_ui: PlayerUI
+@export var stats: PlayerStatsComponent
 
 @export_category("Movement")
 @export var walk_speed: float = 3.0
@@ -17,28 +18,19 @@ class_name Player extends CharacterBody3D
 @export var air_acceleration: float = 1.0
 @export var air_deceleration: float = 2.0
 
-@export_category("Stats")
-@export var base_hunger: float = 100.0
-@export var base_thirst: float = 100.0
-@export var hunger_decrease_rate: float = 150.0 
-@export var thirst_decrease_rate: float = 125.0
-
-@onready var hunger: float = base_hunger
-@onready var thirst: float = base_thirst
-
 var input_vector: Vector2 = Vector2.ZERO
 var stats_draining: bool = false
+
+func _enter_tree() -> void:
+	GameLocator.player = self
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 	DevConsole.add_command("walk_speed", _set_walk_speed, 1)
-	DevConsole.add_command("stats_draining", _stats_draining, 1)
-	DevConsole.add_command("reset_stats", _reset_stats)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	input_vector = keyboard_input_component.input_vector
-	_update_stats(delta)
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -88,24 +80,9 @@ func jump() -> void:
 	if is_on_floor():
 		velocity.y = jump_velocity
 
-func _update_stats(delta: float) -> void:
-	if stats_draining:
-		hunger -= hunger_decrease_rate * delta / 60.0
-		thirst -= thirst_decrease_rate * delta / 60.0
-	player_ui.thirst_bar.value = thirst
-	player_ui.hunger_bar.value = hunger
+### COMMANDS ###
 
 func _set_walk_speed(args: PackedStringArray) -> float:
 	var speed: float = float(args[0])
 	walk_speed = speed
 	return walk_speed
-
-func _stats_draining(args: PackedStringArray) -> bool:
-	var new_draining: bool = true if int(args[0]) == 1 else false
-	stats_draining = new_draining
-	return new_draining
-
-func _reset_stats(_args: PackedStringArray) -> String:
-	hunger = base_hunger
-	thirst = base_thirst
-	return "reset"
