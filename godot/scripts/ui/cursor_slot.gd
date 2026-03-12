@@ -15,11 +15,12 @@ func _process(_delta: float) -> void:
 	global_position = mouse_pos - size / 2
 
 func _cursor_stack_updated(stack: ItemStack) -> void:
-	if stack == null or stack.item_data.is_empty():
+	if stack == null:
 		item_stack = null
 		icon_texture.texture = null
 		quantity_label.text = ""
 		return
+
 	item_stack = stack
 	icon_texture.texture = stack.item_data[0].icon
 	quantity_label.text = str(stack.item_data.size())

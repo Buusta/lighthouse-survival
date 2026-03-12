@@ -107,7 +107,10 @@ func cursor_to_stack(idx: int) -> void:
 
 		inventory_stacks[idx] = inventory_stack
 		stack_updated.emit(inventory_stacks[idx], idx)
-		cursor_updated.emit(cursor_stack)
+		if cursor_stack.item_data.size() > 0:
+			cursor_updated.emit(cursor_stack)
+		else:
+			cursor_updated.emit(null)
 		return
 
 func single_cursor_to_stack(idx: int) -> void:
